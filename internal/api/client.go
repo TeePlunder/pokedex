@@ -16,7 +16,7 @@ func NewClient(baseUrl string) *Client {
 	}
 }
 
-func (c *Client) GetResource(path string, v interface{}) error {
+func (c *Client) getResource(path string, v interface{}) error {
 	url := fmt.Sprintf("%s/%s", c.BaseUrl, path)
 
 	resp, err := http.Get(url)
@@ -41,7 +41,7 @@ func (c *Client) GetResource(path string, v interface{}) error {
 func (c *Client) GetLocationAreas() ([]LocationArea, error) {
 	var res LocationAreaResponse
 
-	if err := c.GetResource("location-area", &res); err != nil {
+	if err := c.getResource("location-area", &res); err != nil {
 		return []LocationArea{}, nil
 	}
 
