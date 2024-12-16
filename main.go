@@ -7,6 +7,13 @@ import (
 	"strings"
 )
 
+// The purpose of this function will be to split the users input into "words" based on whitespace.
+// It should also lowercase the input and trim any leading or trailing whitespace
+func cleanInput(text string) []string {
+	text = strings.TrimSpace(text)
+	return strings.Fields(text)
+}
+
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 
@@ -22,16 +29,8 @@ func main() {
 		}
 
 		cmd := scanner.Text()
-		cmd = strings.TrimSpace(cmd)
-		words := strings.Fields(cmd)
+		words := cleanInput(cmd)
 		first := strings.ToLower(words[0])
 		fmt.Printf("Your command was: %s\n", first)
 	}
-}
-
-// The purpose of this function will be to split the users input into "words" based on whitespace.
-// It should also lowercase the input and trim any leading or trailing whitespace
-func cleanInput(text string) []string {
-	text = strings.TrimSpace(text)
-	return strings.Fields(text)
 }
