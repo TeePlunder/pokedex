@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/teeplunder/pokedexcli/internal/api"
 )
 
 type cliCommand struct {
@@ -15,6 +17,7 @@ type cliCommand struct {
 
 type CLI struct {
 	commands map[string]cliCommand
+	client   *api.Client
 }
 
 // The purpose of this function will be to split the users input into "words" based on whitespace.
@@ -44,9 +47,29 @@ func (cli *CLI) unknownCommand() error {
 	return nil
 }
 
-func NewCLI() *CLI {
+func commandMap(cli *CLI) error {
+
+	areas, err := cli.client.GetLocationAreas()
+	if err != nil {
+		return fmt.Errorf("failed to get areas: %w", err)
+	}
+
+	for _, area := range areas {
+		fmt.Println(area.Name)
+	}
+
+	return nil
+}
+
+func NewCLI(client *api.Client) *CLI {
 	return &CLI{
+		client: client,
 		commands: map[string]cliCommand{
+			"map": {
+				name:        "map",
+				description: "Gets all location areas",
+				callback:    commandMap,
+			},
 			"exit": {
 				name:        "exit",
 				description: "Exit the Pokedex",
