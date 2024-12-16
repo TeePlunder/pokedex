@@ -1,12 +1,32 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"strings"
 )
 
 func main() {
-	fmt.Println("Hello, World!")
+	scanner := bufio.NewScanner(os.Stdin)
+
+	for {
+		fmt.Print("Pokedex > ")
+
+		if !scanner.Scan() {
+			fmt.Fprintln(os.Stderr, "shouldn't see an error scanning a string")
+		}
+
+		if err := scanner.Err(); err != nil {
+			fmt.Fprintln(os.Stderr, "shouldn't see an error scanning a string")
+		}
+
+		cmd := scanner.Text()
+		cmd = strings.TrimSpace(cmd)
+		words := strings.Fields(cmd)
+		first := strings.ToLower(words[0])
+		fmt.Printf("Your command was: %s\n", first)
+	}
 }
 
 // The purpose of this function will be to split the users input into "words" based on whitespace.
