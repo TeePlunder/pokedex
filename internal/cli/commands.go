@@ -53,7 +53,7 @@ func (cli *CLI) unknownCommand() error {
 	return nil
 }
 
-func executeMap(cli *CLI, path string) error {
+func displayLocationAreas(cli *CLI, path string) error {
 	data, err := cli.client.GetLocationAreas(path)
 	if err != nil {
 		return fmt.Errorf("failed to get areas: %w", err)
@@ -84,7 +84,7 @@ func commandMap(cli *CLI) error {
 		path = getLastUrlPath(*cli.config.Next)
 	}
 
-	return executeMap(cli, path)
+	return displayLocationAreas(cli, path)
 }
 
 func commandMapBack(cli *CLI) error {
@@ -94,7 +94,7 @@ func commandMapBack(cli *CLI) error {
 	}
 	path := getLastUrlPath(*cli.config.Previous)
 
-	return executeMap(cli, path)
+	return displayLocationAreas(cli, path)
 }
 
 func NewCLI(client *api.Client) *CLI {
