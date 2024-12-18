@@ -87,6 +87,16 @@ func commandMap(cli *CLI) error {
 	return executeMap(cli, path)
 }
 
+func commandMapBack(cli *CLI) error {
+	if cli.config.Previous == nil {
+		fmt.Println("you're on the first page")
+		return nil
+	}
+	path := getLastUrlPath(*cli.config.Previous)
+
+	return executeMap(cli, path)
+}
+
 func NewCLI(client *api.Client) *CLI {
 	return &CLI{
 		client: client,
@@ -95,6 +105,11 @@ func NewCLI(client *api.Client) *CLI {
 				name:        "map",
 				description: "Gets all location areas",
 				callback:    commandMap,
+			},
+			"mapb": {
+				name:        "mapb",
+				description: "Gets all location areas from the previous location",
+				callback:    commandMapBack,
 			},
 			"exit": {
 				name:        "exit",
