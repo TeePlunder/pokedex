@@ -42,7 +42,8 @@ func commandExit(cli *CLI) error {
 
 func commandHelp(cli *CLI) error {
 	fmt.Println("Welcome to the Pokedex!")
-	fmt.Printf("Usage:\n\n")
+	fmt.Println("Usage:")
+	fmt.Println("")
 	for _, cmd := range cli.commands {
 		fmt.Printf("%s: %s\n", cmd.name, cmd.description)
 	}
