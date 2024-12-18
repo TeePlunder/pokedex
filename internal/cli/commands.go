@@ -9,6 +9,11 @@ import (
 	"github.com/teeplunder/pokedexcli/internal/api"
 )
 
+type config struct {
+	Next     *string
+	Previous *string
+}
+
 type cliCommand struct {
 	name        string
 	description string
@@ -18,6 +23,7 @@ type cliCommand struct {
 type CLI struct {
 	commands map[string]cliCommand
 	client   *api.Client
+	config   *config
 }
 
 // The purpose of this function will be to split the users input into "words" based on whitespace.
@@ -48,15 +54,17 @@ func (cli *CLI) unknownCommand() error {
 }
 
 func commandMap(cli *CLI) error {
-
-	areas, err := cli.client.GetLocationAreas()
+	data, err := cli.client.GetLocationAreas()
 	if err != nil {
 		return fmt.Errorf("failed to get areas: %w", err)
 	}
 
-	for _, area := range areas {
+	for _, area := range data.Results {
 		fmt.Println(area.Name)
 	}
+
+	cli.config.Next = &data.Next
+	cli.config.Previous = data.Previous
 
 	return nil
 }
@@ -80,6 +88,10 @@ func NewCLI(client *api.Client) *CLI {
 				description: "Displays a help message",
 				callback:    commandHelp,
 			},
+		},
+		config: &config{
+			Next:     nil,
+			Previous: nil,
 		},
 	}
 }
