@@ -53,17 +53,7 @@ func (cli *CLI) unknownCommand() error {
 	return nil
 }
 
-func commandMap(cli *CLI) error {
-	path := ""
-	if cli.config.Next != nil {
-		// get url path (last part from the url)
-		nextUrl := *cli.config.Next
-		lastSlashIndex := strings.LastIndex(nextUrl, "/")
-		if lastSlashIndex != -1 {
-			path = nextUrl[lastSlashIndex+1:]
-		}
-	}
-
+func executeMap(cli *CLI, path string) error {
 	data, err := cli.client.GetLocationAreas(path)
 	if err != nil {
 		return fmt.Errorf("failed to get areas: %w", err)
@@ -77,6 +67,24 @@ func commandMap(cli *CLI) error {
 	cli.config.Previous = data.Previous
 
 	return nil
+}
+
+func getLastUrlPath(path string) string {
+	lastSlashIndex := strings.LastIndex(path, "/")
+	if lastSlashIndex == -1 {
+		return ""
+	}
+	return path[lastSlashIndex+1:]
+}
+
+func commandMap(cli *CLI) error {
+	path := ""
+	if cli.config.Next != nil {
+		// get url path (last part from the url)
+		path = getLastUrlPath(*cli.config.Next)
+	}
+
+	return executeMap(cli, path)
 }
 
 func NewCLI(client *api.Client) *CLI {
