@@ -30,6 +30,7 @@ type CLI struct {
 // It should also lowercase the input and trim any leading or trailing whitespace
 func cleanInput(text string) []string {
 	text = strings.TrimSpace(text)
+	text = strings.ToLower(text)
 	return strings.Fields(text)
 }
 
@@ -148,9 +149,7 @@ func (cli *CLI) Run() {
 			continue
 		}
 
-		firstWord := strings.ToLower(words[0])
-
-		if cmd, exists := cli.commands[firstWord]; exists {
+		if cmd, exists := cli.commands[words[0]]; exists {
 			// Execute the command callback
 			if err := cmd.callback(cli); err != nil {
 				fmt.Println("Error:", err)
