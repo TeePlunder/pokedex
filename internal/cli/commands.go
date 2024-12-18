@@ -143,7 +143,7 @@ func (cli *CLI) Run() {
 		input := scanner.Text()
 		words := cleanInput(input)
 
-		if len(words) <= 0 {
+		if len(words) == 0 {
 			fmt.Println("Please enter a command. Type 'help' to see all available commands")
 			continue
 		}
