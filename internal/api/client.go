@@ -38,10 +38,14 @@ func (c *Client) getResource(path string, v interface{}) error {
 	return nil
 }
 
-func (c *Client) GetLocationAreas() (LocationAreaResponse, error) {
+func (c *Client) GetLocationAreas(path string) (LocationAreaResponse, error) {
+	if path == "" {
+		path = "location-area"
+	}
+
 	var res LocationAreaResponse
 
-	if err := c.getResource("location-area", &res); err != nil {
+	if err := c.getResource(path, &res); err != nil {
 		return res, nil
 	}
 

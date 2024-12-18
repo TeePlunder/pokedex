@@ -54,7 +54,7 @@ func (cli *CLI) unknownCommand() error {
 }
 
 func commandMap(cli *CLI) error {
-	data, err := cli.client.GetLocationAreas()
+	data, err := cli.client.GetLocationAreas("")
 	if err != nil {
 		return fmt.Errorf("failed to get areas: %w", err)
 	}
