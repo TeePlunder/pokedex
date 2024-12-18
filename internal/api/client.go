@@ -16,6 +16,7 @@ func NewClient(baseUrl string) *Client {
 	}
 }
 
+// fetches the resource at the given path and unmarshals the JSON response into v.
 func (c *Client) getResource(path string, v interface{}) error {
 	url := fmt.Sprintf("%s/%s", c.BaseUrl, path)
 
@@ -38,6 +39,8 @@ func (c *Client) getResource(path string, v interface{}) error {
 	return nil
 }
 
+// Retrieves location areas from the given path.
+// If path is empty, it defaults to "location-area".
 func (c *Client) GetLocationAreas(path string) (LocationAreaResponse, error) {
 	if path == "" {
 		path = "location-area"
