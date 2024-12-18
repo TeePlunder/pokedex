@@ -49,7 +49,7 @@ func commandHelp(cli *CLI) error {
 }
 
 func (cli *CLI) unknownCommand() error {
-	fmt.Println("Unkown Command")
+	fmt.Println("Unknown Command")
 	return nil
 }
 
