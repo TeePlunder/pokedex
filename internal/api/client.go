@@ -46,7 +46,7 @@ func (c *Client) GetLocationAreas(path string) (LocationAreaResponse, error) {
 	var res LocationAreaResponse
 
 	if err := c.getResource(path, &res); err != nil {
-		return res, nil
+		return res, err
 	}
 
 	return res, nil
