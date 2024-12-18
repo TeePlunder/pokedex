@@ -22,7 +22,7 @@ func (c *Client) getResource(path string, v interface{}) error {
 	resp, err := http.Get(url)
 
 	if err != nil {
-		return fmt.Errorf("Failed to perform GET request: %w", err)
+		return fmt.Errorf("failed to perform GET request\n %w", err)
 	}
 
 	defer resp.Body.Close()
