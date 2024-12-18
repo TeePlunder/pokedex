@@ -64,7 +64,12 @@ func displayLocationAreas(cli *CLI, path string) error {
 		fmt.Println(area.Name)
 	}
 
-	cli.config.Next = &data.Next
+	if data.Next == "" {
+		cli.config.Next = nil
+	} else {
+		cli.config.Next = &data.Next
+	}
+
 	cli.config.Previous = data.Previous
 
 	return nil
