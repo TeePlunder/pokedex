@@ -94,17 +94,36 @@ func (c *Client) GetLocationAreas(path string) (LocationAreaResponse, error) {
 
 func (c *Client) GetPokemonEncountersAtLocationArea(area string) ([]Pokemon, error) {
 	var res LocationAreaDetailsResponse
-	//TODO: add cache
+	var encounteredPokemons []Pokemon
+	path := fmt.Sprintf(API_PATH_LOCATION_AREA_DETAILS, area)
 
-	if err := c.getResource(fmt.Sprintf(API_PATH_LOCATION_AREA_DETAILS, area), &res); err != nil {
-		return nil, err
+	if cachedValue, ok := c.Cache.Get(path); ok {
+		// cachedValue is []byte (raw JSON)
+		// decode into res
+		if err := json.Unmarshal(cachedValue, &encounteredPokemons); err == nil {
+			fmt.Println("-> use cached values")
+			return encounteredPokemons, nil
+		}
+		// fall throught to api call
 	}
 
-	var encounteredPokemons []Pokemon
+	if err := c.getResource(path, &res); err != nil {
+		return nil, err
+	}
 
 	for _, encounter := range res.PokemonEncounters {
 		encounteredPokemons = append(encounteredPokemons, encounter.Pokemon)
 	}
+
+	// store value in Cache
+
+	// convert res to json bytes for cache storage
+	jsonData, err := json.Marshal(encounteredPokemons)
+	if err == nil {
+		c.Cache.Add(path, jsonData)
+	}
+
+	fmt.Println("-> use api values")
 
 	return encounteredPokemons, nil
 
