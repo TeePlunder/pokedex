@@ -67,6 +67,9 @@ func commandMapBack(cli *CLI, param string) error {
 }
 
 func commandExplore(cli *CLI, param string) error {
+	if len(param) == 0 {
+		return fmt.Errorf("Please enter the name of the area")
+	}
 	area := param
 	fmt.Printf("Exploring %s...\n", area)
 
