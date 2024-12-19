@@ -106,10 +106,7 @@ func commandCatch(cli *CLI, param string) error {
 
 	if catched {
 		fmt.Printf("%s was caught!\n", pokemon)
-		cli.pokedex[pokemon] = api.Pokemon{
-			Name: pokemon,
-			URL:  "",
-		}
+		cli.pokedex[pokemon] = data
 	} else {
 		fmt.Printf("%s escaped!\n", pokemon)
 	}
