@@ -24,6 +24,7 @@ type CLI struct {
 	commands map[string]cliCommand
 	client   *api.Client
 	config   *config
+	pokedex  map[string]api.Pokemon
 }
 
 func commandExit(cli *CLI, param string) error {
@@ -105,6 +106,10 @@ func commandCatch(cli *CLI, param string) error {
 
 	if catched {
 		fmt.Printf("%s was caught!\n", pokemon)
+		cli.pokedex[pokemon] = api.Pokemon{
+			Name: pokemon,
+			URL:  "",
+		}
 	} else {
 		fmt.Printf("%s escaped!\n", pokemon)
 	}
@@ -151,6 +156,7 @@ func NewCLI(client *api.Client) *CLI {
 			Next:     nil,
 			Previous: nil,
 		},
+		pokedex: make(map[string]api.Pokemon),
 	}
 }
 
