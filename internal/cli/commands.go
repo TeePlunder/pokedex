@@ -28,7 +28,7 @@ type CLI struct {
 
 // The purpose of this function will be to split the users input into "words" based on whitespace.
 // It should also lowercase the input and trim any leading or trailing whitespace
-func cleanInput(text string) []string {
+func CleanInput(text string) []string {
 	text = strings.TrimSpace(text)
 	text = strings.ToLower(text)
 	return strings.Fields(text)
@@ -148,7 +148,7 @@ func (cli *CLI) Run() {
 		}
 
 		input := scanner.Text()
-		words := cleanInput(input)
+		words := CleanInput(input)
 
 		if len(words) == 0 {
 			fmt.Println("Please enter a command. Type 'help' to see all available commands")

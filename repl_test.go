@@ -1,6 +1,10 @@
 package main
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/teeplunder/pokedexcli/internal/cli"
+)
 
 func TestCleanInput(t *testing.T) {
 	cases := []struct {
@@ -34,7 +38,7 @@ func TestCleanInput(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		actual := cleanInput(c.input)
+		actual := cli.CleanInput(c.input)
 		actualLength := len(actual)
 		expectedLength := len(c.expected)
 		if actualLength != expectedLength {
