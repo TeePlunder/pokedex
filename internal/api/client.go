@@ -21,8 +21,20 @@ func NewClient(baseUrl string, cache *cache.Cache) *Client {
 	}
 }
 
-// fetches the resource at the given path and unmarshals the JSON response into v.
-func (c *Client) getResource(urlPath string, v interface{}) error {
+// Fetches the resource at the given path, attempts to load from cache first,
+// and if not found, fetches from the API and caches the result.
+func (c *Client) getResource(urlPath string, value interface{}) error {
+
+	if cachedValue, ok := c.Cache.Get(urlPath); ok {
+		// cachedValue is []byte (raw JSON)
+		// decode into value
+		if err := json.Unmarshal(cachedValue, value); err == nil {
+			fmt.Println("-> use cached values")
+			return nil
+		}
+		// fall throught to api call
+	}
+
 	base, err := url.Parse(c.BaseUrl)
 	if err != nil {
 		return fmt.Errorf("failed to parse base URL: %w", err)
@@ -48,10 +60,18 @@ func (c *Client) getResource(urlPath string, v interface{}) error {
 		return fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 	}
 
-	if err := json.NewDecoder(resp.Body).Decode(v); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(value); err != nil {
 		return fmt.Errorf("Failed to decode json: %w", err)
 	}
 
+	// store value in Cache
+
+	// convert value to json bytes for cache storage
+	if jsonData, err := json.Marshal(value); err == nil {
+		c.Cache.Add(urlPath, jsonData)
+	}
+
+	fmt.Println("-> use api values")
 	return nil
 }
 
@@ -64,31 +84,10 @@ func (c *Client) GetLocationAreas(path string) (LocationAreaResponse, error) {
 
 	var res LocationAreaResponse
 
-	// check if value exists in cache
-
-	if cachedValue, ok := c.Cache.Get(path); ok {
-		// cachedValue is []byte (raw JSON)
-		// decode into res
-		if err := json.Unmarshal(cachedValue, &res); err == nil {
-			fmt.Println("-> use cached values")
-			return res, nil
-		}
-		// fall throught to api call
-	}
-
 	if err := c.getResource(path, &res); err != nil {
 		return res, err
 	}
 
-	// store value in Cache
-
-	// convert res to json bytes for cache storage
-	jsonData, err := json.Marshal(res)
-	if err == nil {
-		c.Cache.Add(path, jsonData)
-	}
-
-	fmt.Println("-> use api values")
 	return res, nil
 }
 
@@ -97,16 +96,6 @@ func (c *Client) GetPokemonEncountersAtLocationArea(area string) ([]Pokemon, err
 	var encounteredPokemons []Pokemon
 	path := fmt.Sprintf(API_PATH_LOCATION_AREA_DETAILS, area)
 
-	if cachedValue, ok := c.Cache.Get(path); ok {
-		// cachedValue is []byte (raw JSON)
-		// decode into res
-		if err := json.Unmarshal(cachedValue, &encounteredPokemons); err == nil {
-			fmt.Println("-> use cached values")
-			return encounteredPokemons, nil
-		}
-		// fall throught to api call
-	}
-
 	if err := c.getResource(path, &res); err != nil {
 		return nil, err
 	}
@@ -114,16 +103,6 @@ func (c *Client) GetPokemonEncountersAtLocationArea(area string) ([]Pokemon, err
 	for _, encounter := range res.PokemonEncounters {
 		encounteredPokemons = append(encounteredPokemons, encounter.Pokemon)
 	}
-
-	// store value in Cache
-
-	// convert res to json bytes for cache storage
-	jsonData, err := json.Marshal(encounteredPokemons)
-	if err == nil {
-		c.Cache.Add(path, jsonData)
-	}
-
-	fmt.Println("-> use api values")
 
 	return encounteredPokemons, nil
 
