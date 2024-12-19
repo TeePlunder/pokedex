@@ -116,11 +116,13 @@ func commandCatch(cli *CLI, param string) error {
 
 func commandInspect(cli *CLI, param string) error {
 	if len(param) == 0 {
-		return fmt.Errorf("Please enter the name a catched pokemon")
+		fmt.Println("Please enter the name a catched pokemon")
+		return nil
 	}
 	pokemon, found := cli.pokedex[param]
 	if !found {
-		return fmt.Errorf("you have not caught that pokemon")
+		fmt.Println("you have not caught that pokemon")
+		return nil
 	}
 
 	fmt.Printf("Name: %s\nHeight: %d\n Weight: %d\n", pokemon.Name, pokemon.Height, pokemon.Weight)
