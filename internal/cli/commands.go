@@ -17,7 +17,7 @@ type config struct {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*CLI) error
+	callback    func(*CLI, string) error
 }
 
 type CLI struct {
@@ -34,13 +34,13 @@ func CleanInput(text string) []string {
 	return strings.Fields(text)
 }
 
-func commandExit(cli *CLI) error {
+func commandExit(cli *CLI, param string) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
 }
 
-func commandHelp(cli *CLI) error {
+func commandHelp(cli *CLI, param string) error {
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:")
 	fmt.Println("")
@@ -84,7 +84,7 @@ func getLastUrlPath(path string) string {
 	return path[lastSlashIndex+1:]
 }
 
-func commandMap(cli *CLI) error {
+func commandMap(cli *CLI, param string) error {
 	path := ""
 	if cli.config.Next != nil {
 		// get url path (last part from the url)
@@ -94,7 +94,7 @@ func commandMap(cli *CLI) error {
 	return displayLocationAreas(cli, path)
 }
 
-func commandMapBack(cli *CLI) error {
+func commandMapBack(cli *CLI, param string) error {
 	if cli.config.Previous == nil {
 		fmt.Println("you're on the first page")
 		return nil
@@ -156,8 +156,13 @@ func (cli *CLI) Run() {
 		}
 
 		if cmd, exists := cli.commands[words[0]]; exists {
+			param := ""
+			if len(words) > 1 {
+				param = words[1]
+			}
+
 			// Execute the command callback
-			if err := cmd.callback(cli); err != nil {
+			if err := cmd.callback(cli, param); err != nil {
 				fmt.Println("Error:", err)
 			}
 		} else {
