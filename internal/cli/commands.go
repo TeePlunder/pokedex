@@ -3,6 +3,7 @@ package cli
 import (
 	"bufio"
 	"fmt"
+	"math/rand/v2"
 	"os"
 
 	"github.com/teeplunder/pokedexcli/internal/api"
@@ -86,6 +87,31 @@ func commandExplore(cli *CLI, param string) error {
 	return nil
 }
 
+func commandCatch(cli *CLI, param string) error {
+	if len(param) == 0 {
+		return fmt.Errorf("Please enter the name of the pokemon")
+	}
+	pokemon := param
+	fmt.Printf("Throwing a Pokeball at %s...\n", pokemon)
+
+	data, err := cli.client.GetPokemon(pokemon)
+	if err != nil {
+		return fmt.Errorf("failed to get pokemon %s: %w\n", pokemon, err)
+	}
+
+	max := data.BaseExperience
+	catchValue := rand.IntN(max)
+	catched := catchValue >= max/2
+
+	if catched {
+		fmt.Printf("%s was caught!\n", pokemon)
+	} else {
+		fmt.Printf("%s escaped!\n", pokemon)
+	}
+
+	return nil
+}
+
 func NewCLI(client *api.Client) *CLI {
 	return &CLI{
 		client: client,
@@ -104,6 +130,11 @@ func NewCLI(client *api.Client) *CLI {
 				name:        "explore <area>",
 				description: "Explores an area and displays all Pokemon found",
 				callback:    commandExplore,
+			},
+			"catch": {
+				name:        "catch <pokemon>",
+				description: "Tries to catch a pokemon",
+				callback:    commandCatch,
 			},
 			"exit": {
 				name:        "exit",
