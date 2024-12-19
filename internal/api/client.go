@@ -91,3 +91,21 @@ func (c *Client) GetLocationAreas(path string) (LocationAreaResponse, error) {
 	fmt.Println("-> use api values")
 	return res, nil
 }
+
+func (c *Client) GetPokemonEncountersAtLocationArea(area string) ([]Pokemon, error) {
+	var res LocationAreaDetailsResponse
+	//TODO: add cache
+
+	if err := c.getResource(fmt.Sprintf("location-area/%s", area), &res); err != nil {
+		return nil, err
+	}
+
+	var encounteredPokemons []Pokemon
+
+	for _, encounter := range res.PokemonEncounters {
+		encounteredPokemons = append(encounteredPokemons, encounter.Pokemon)
+	}
+
+	return encounteredPokemons, nil
+
+}
