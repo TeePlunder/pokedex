@@ -39,3 +39,7 @@ type LocationAreaDetailsResponse struct {
 		} `json:"version_details"`
 	} `json:"pokemon_encounters"`
 }
+
+type PokemonResponse struct {
+	BaseExperience int `json:"base_experience"`
+}

@@ -105,3 +105,11 @@ func (c *Client) GetPokemonEncountersAtLocationArea(area string) ([]Pokemon, err
 	return encounteredPokemons, nil
 
 }
+
+func (c *Client) GetPokemon(name string) (PokemonResponse, error) {
+	var res PokemonResponse
+
+	err := c.getResource(fmt.Sprintf(API_PATH_POKEMON_DETAILS, name), &res)
+
+	return res, err
+}
