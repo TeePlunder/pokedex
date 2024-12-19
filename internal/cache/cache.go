@@ -55,3 +55,16 @@ func (cache *Cache) Delete(key string) {
 
 	delete(cache.entries, key)
 }
+
+// removes all entries older then the interval of the cache
+func (cache *Cache) reap() {
+	cache.mutex.Lock()
+	defer cache.mutex.Unlock()
+
+	now := time.Now()
+	for key, entry := range cache.entries {
+		if now.Sub(entry.createdAt) > cache.interval {
+			delete(cache.entries, key)
+		}
+	}
+}
