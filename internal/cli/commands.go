@@ -140,6 +140,16 @@ func commandInspect(cli *CLI, param string) error {
 	return nil
 }
 
+func commandPokedex(cli *CLI, param string) error {
+	fmt.Println("Your Pokedex:")
+
+	for _, pokemon := range cli.pokedex {
+		fmt.Println("- ", pokemon.Name)
+	}
+
+	return nil
+}
+
 func NewCLI(client *api.Client) *CLI {
 	return &CLI{
 		client: client,
@@ -168,6 +178,11 @@ func NewCLI(client *api.Client) *CLI {
 				name:        "inspect <pokemon>",
 				description: "inspect a catched pokemon (stats, types, ...)",
 				callback:    commandInspect,
+			},
+			"pokedex": {
+				name:        "pokedex",
+				description: "list all your catched pokemons",
+				callback:    commandPokedex,
 			},
 			"exit": {
 				name:        "exit",
