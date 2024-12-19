@@ -82,7 +82,7 @@ func commandExplore(cli *CLI, param string) error {
 
 	fmt.Println("Found Pokemon:")
 	for _, pokemon := range data {
-		fmt.Printf("- %s\n", pokemon.Name)
+		fmt.Printf("- %s\n", pokemon)
 	}
 
 	return nil

@@ -89,9 +89,9 @@ func (c *Client) GetLocationAreas(path string) (LocationAreaResponse, error) {
 	return res, err
 }
 
-func (c *Client) GetPokemonEncountersAtLocationArea(area string) ([]Pokemon, error) {
+func (c *Client) GetPokemonEncountersAtLocationArea(area string) ([]string, error) {
 	var res LocationAreaDetailsResponse
-	var encounteredPokemons []Pokemon
+	var encounteredPokemons []string
 	path := fmt.Sprintf(API_PATH_LOCATION_AREA_DETAILS, area)
 
 	if err := c.getResource(path, &res); err != nil {
@@ -99,7 +99,7 @@ func (c *Client) GetPokemonEncountersAtLocationArea(area string) ([]Pokemon, err
 	}
 
 	for _, encounter := range res.PokemonEncounters {
-		encounteredPokemons = append(encounteredPokemons, encounter.Pokemon)
+		encounteredPokemons = append(encounteredPokemons, encounter.Pokemon.Name)
 	}
 
 	return encounteredPokemons, nil
