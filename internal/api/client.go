@@ -59,7 +59,7 @@ func (c *Client) getResource(urlPath string, v interface{}) error {
 // If path is empty, it defaults to "location-area".
 func (c *Client) GetLocationAreas(path string) (LocationAreaResponse, error) {
 	if path == "" {
-		path = "location-area"
+		path = API_PATH_LOCATION_AREA
 	}
 
 	var res LocationAreaResponse
@@ -96,7 +96,7 @@ func (c *Client) GetPokemonEncountersAtLocationArea(area string) ([]Pokemon, err
 	var res LocationAreaDetailsResponse
 	//TODO: add cache
 
-	if err := c.getResource(fmt.Sprintf("location-area/%s", area), &res); err != nil {
+	if err := c.getResource(fmt.Sprintf(API_PATH_LOCATION_AREA_DETAILS, area), &res); err != nil {
 		return nil, err
 	}
 

@@ -10,7 +10,7 @@ import (
 
 func main() {
 	cache := cache.NewCache(5 * time.Second)
-	client := api.NewClient("https://pokeapi.co/api/v2/", cache)
+	client := api.NewClient(api.API_BASE_PATH, cache)
 	app := cli.NewCLI(client)
 	app.Run()
 }
