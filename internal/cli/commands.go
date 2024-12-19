@@ -114,6 +114,30 @@ func commandCatch(cli *CLI, param string) error {
 	return nil
 }
 
+func commandInspect(cli *CLI, param string) error {
+	if len(param) == 0 {
+		return fmt.Errorf("Please enter the name a catched pokemon")
+	}
+	pokemon, found := cli.pokedex[param]
+	if !found {
+		return fmt.Errorf("you have not caught that pokemon")
+	}
+
+	fmt.Printf("Name: %s\nHeight: %d\n Weight: %d\n", pokemon.Name, pokemon.Height, pokemon.Weight)
+
+	fmt.Println("Stats:")
+	for _, value := range pokemon.Stats {
+		fmt.Printf("- %s: %d\n", value.Stat.Name, value.BaseStat)
+	}
+
+	fmt.Println("Types:")
+	for _, value := range pokemon.Types {
+		fmt.Println("- ", value.Type.Name)
+	}
+
+	return nil
+}
+
 func NewCLI(client *api.Client) *CLI {
 	return &CLI{
 		client: client,
@@ -137,6 +161,11 @@ func NewCLI(client *api.Client) *CLI {
 				name:        "catch <pokemon>",
 				description: "Tries to catch a pokemon",
 				callback:    commandCatch,
+			},
+			"inspect": {
+				name:        "inspect <pokemon>",
+				description: "inspect a catched pokemon (stats, types, ...)",
+				callback:    commandInspect,
 			},
 			"exit": {
 				name:        "exit",
