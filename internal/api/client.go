@@ -84,11 +84,9 @@ func (c *Client) GetLocationAreas(path string) (LocationAreaResponse, error) {
 
 	var res LocationAreaResponse
 
-	if err := c.getResource(path, &res); err != nil {
-		return res, err
-	}
+	err := c.getResource(path, &res)
 
-	return res, nil
+	return res, err
 }
 
 func (c *Client) GetPokemonEncountersAtLocationArea(area string) ([]Pokemon, error) {
