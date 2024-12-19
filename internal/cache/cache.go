@@ -42,3 +42,10 @@ func (cache *Cache) Get(key string) (val []byte, ok bool) {
 	val = entry.val
 	return
 }
+
+func (cache *Cache) Delete(key string) {
+	cache.mutex.Lock()
+	defer cache.mutex.Unlock()
+
+	delete(cache.entries, key)
+}
