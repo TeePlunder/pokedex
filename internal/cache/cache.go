@@ -32,3 +32,13 @@ func (cache *Cache) Add(key string, val []byte) {
 		val:       val,
 	}
 }
+
+func (cache *Cache) Get(key string) (val []byte, ok bool) {
+	cache.mutex.Lock()
+	defer cache.mutex.Unlock()
+
+	entry, ok := cache.entries[key]
+
+	val = entry.val
+	return
+}
