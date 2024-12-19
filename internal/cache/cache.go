@@ -23,3 +23,12 @@ func NewCache(interval time.Duration) *Cache {
 	}
 }
 
+func (cache *Cache) Add(key string, val []byte) {
+	cache.mutex.Lock()
+	defer cache.mutex.Unlock()
+
+	cache.entries[key] = cacheEntry{
+		createdAt: time.Now(),
+		val:       val,
+	}
+}
