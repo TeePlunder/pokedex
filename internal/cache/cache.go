@@ -9,6 +9,12 @@ type Cache struct {
 	mutex    sync.Mutex
 	entries  map[string]cacheEntry
 	interval time.Duration
+	// stopCh chan struct{}
+	// You don't strictly need stopCh, but it’s useful for a clean shutdown of your background goroutine.
+	// Without it, the reapLoop() will continue running until the program exits.
+	// If you want the ability to stop the loop at some point (for example, during application shutdown or testing),
+	// having a stopCh channel allows you to signal the goroutine to exit gracefully.
+	// If your application never needs to stop the reap loop, you could omit it. However, it’s good practice to include a stop mechanism for long-running goroutines.
 }
 
 type cacheEntry struct {
