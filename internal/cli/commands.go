@@ -104,6 +104,23 @@ func commandMapBack(cli *CLI, param string) error {
 	return displayLocationAreas(cli, path)
 }
 
+func commandExplore(cli *CLI, param string) error {
+	area := param
+	fmt.Printf("Exploring %s...\n", area)
+
+	data, err := cli.client.GetPokemonEncountersAtLocationArea(area)
+	if err != nil {
+		return fmt.Errorf("failed to explore %s: %w", area, err)
+	}
+
+	fmt.Println("Found Pokemon:")
+	for _, pokemon := range data {
+		fmt.Printf("- %s\n", pokemon.Name)
+	}
+
+	return nil
+}
+
 func NewCLI(client *api.Client) *CLI {
 	return &CLI{
 		client: client,
@@ -117,6 +134,11 @@ func NewCLI(client *api.Client) *CLI {
 				name:        "mapb",
 				description: "Gets all location areas from the previous location",
 				callback:    commandMapBack,
+			},
+			"explore": {
+				name:        "explore <area>",
+				description: "Explores an area and displays all Pokemon found",
+				callback:    commandExplore,
 			},
 			"exit": {
 				name:        "exit",
