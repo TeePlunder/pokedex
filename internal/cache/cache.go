@@ -23,10 +23,16 @@ type cacheEntry struct {
 }
 
 func NewCache(interval time.Duration) *Cache {
-	return &Cache{
+	cache := &Cache{
 		entries:  make(map[string]cacheEntry),
 		interval: interval,
 	}
+
+	if interval > 0 {
+		go cache.reapLoop()
+	}
+
+	return cache
 }
 
 func (cache *Cache) Add(key string, val []byte) {
@@ -54,6 +60,19 @@ func (cache *Cache) Delete(key string) {
 	defer cache.mutex.Unlock()
 
 	delete(cache.entries, key)
+}
+
+// clears all entries on interval ticks
+func (cache *Cache) reapLoop() {
+	ticker := time.NewTicker(cache.interval)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ticker.C:
+			cache.reap()
+		}
+	}
 }
 
 // removes all entries older then the interval of the cache
